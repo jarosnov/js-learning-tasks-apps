@@ -1,21 +1,24 @@
 /*
-1) Оформить расчет дневного бюджета и вывод на экран этого значения как одну функцию(detectDayBudget)
+1) Написать проверку, что пользователь может:
 
-2) Оформить блок кода с расчетом уровня достатка как отдельную функцию(detectLevel)
+·Ввести в дополнительных доходах(chooseIncome) только строку
 
-3) Создать функцию для определения необязательных расходов(chooseOptExpenses):
+· Не может оставить строку пустой
 
-    Необходимо 3 раза спросить у пользователя“ Статья необязательных расходов ? ”
+· Не может отменить вопрос
 
-    Записать ответы в объект optionalExpenses в формате Номер - Ответ.
+2) При помощи метода перебора массива(forEach) вывести на экран сообщение "Способы доп. заработка: "
+и полученные способы(внутри chooseIncome)
 
-optionalExpenses: {
-    1: “ответ на вопрос”
-}
+· Товары должны начинаться с 1, а не с 0. Выполняем этот пункт в chooseIncome.
 
-Вызывать функции не обязательно.
+3) Используя цикл
+for in для объекта(appData) вывести в консоль сообщение "Наша программа включает в себя данные: "(вывести весь appData)
 
-4) Добавить папку с третьим уроком на GitHub
+4) Проверить, чтобы все работало и не было ошибок в консоли
+
+5) Добавить папку с уроком на свой GitHub
+Вопросы к этому заданию
 */
 let money, time;
 
@@ -28,71 +31,79 @@ function start() {
     }
 }
 start();
-
 let appData = {
     budget: money,
     expenses: {},
     optionalExpenses: {},
     income: [], // массив данных с доп. доходом
     timeData: time,
-    savings: true
-};
+    savings: true,
+    chooseExpenses: function () { // Создаем функцию обязательных расходов
+        for (let i = 0; i < 2; i++) {
+            let a = prompt("Введите обязательную статью расходов в этом месяце", ''),
+                b = prompt("Во сколько обойдется", '');
 
-// Создаем функцию обязательных расходов
-function chooseExpenses() {
-    for (let i = 0; i < 2; i++) {
-        let a = prompt("Введите обязательную статью расходов в этом месяце", ''),
-            b = prompt("Во сколько обойдется", '');
-
-        if ((typeof (a)) === 'string' && (typeof (a)) != null && (typeof (b)) != null &&
-            a != '' && b != '' && a.length < 50) {
-            console.log('done');
-            appData.expenses[a] = b;
-        } else {
-            i = i - 1;
+            if ((typeof (a)) === 'string' && (typeof (a)) != null && (typeof (b)) != null &&
+                a != '' && b != '' && a.length < 50) {
+                console.log('done');
+                appData.expenses[a] = b;
+            } else {
+                i = i - 1;
+            }
         }
-    };
-}
-chooseExpenses();
-
-function detectDayBudget() {
-    appData.moneyPerDay = (appData.budget / 30).toFixed(); // Округляем числа до ближайшего целого и возвращает string
-
-    alert('Ваш бюджет на 1 день:' + appData.moneyPerDay);
-}
-detectDayBudget();
-
-//Функция уровня достатка
-function detectLevel() {
-    if (appData.moneyPerDay < 100) {
-        console.log('Минимальный уровень достатка')
-    } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 1000) {
-        console.log('Средний уровень достатка')
-    } else if (appData.moneyPerDay > 1000) {
-        console.log('Высокий уровень достатка')
-    } else {
-        console.log('Произошла ошибка')
+    },
+    detectDayBudget: function () {
+        appData.moneyPerDay = (appData.budget / 30).toFixed(); // Округляем числа до ближайшего целого и возвращает string
+        alert('Ваш бюджет на 1 день:' + appData.moneyPerDay);
+    },
+    detectLevel: function () { //Функция уровня достатка
+        if (appData.moneyPerDay < 100) {
+            console.log('Минимальный уровень достатка')
+        } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 1000) {
+            console.log('Средний уровень достатка')
+        } else if (appData.moneyPerDay > 1000) {
+            console.log('Высокий уровень достатка')
+            console.log('Произошла ошибка')
+        }
+    },
+    checkSavings: function () { // Функция для расчета накопления депозита
+        if (appData.savings == true) {
+            let save = +prompt("Какова сумма накоплений?"),
+                percent = +prompt("Под какой процент,");
+            appData.mounthIncome = save / 100 / 12 * percent;
+            alert("Доход в месяц с вашего депозита: " + appData.mounthIncome);
+        }
+    },
+    chooseOptExpenses: function () { // Функция необязательных расходов
+        for (let i = 1; i < 3; i++) {
+            let articleOptExpenses = prompt("Статья необязательных расходов?", '');
+            appData.optionalExpenses[i] = articleOptExpenses;
+        }
+    },
+    chooseIncome: function () {
+        let items = prompt("Что принесет дополнительный доход? (Перечислите через запятую) ", '');
+        appData.income = items.split(', ');
+        appData.income.push(prompt('Может что-то ещё?', ''));
+        appData.income.sort();
+        //if (items !== 'string' || items == '' || items == null) {}
+        while (items == '' || items == null) {
+            items = prompt("Что принесет дополнительный доход? (Перечислите через запятую) ", '');
+        }
+        // TO DO IT
+        //let incomeList = alert('Способы доп. заработка: ' + appData.income.forEach(function (item, i) {
+        //    return (i + item);
+        //}, ''))
+        //appData.income = incomeList.split(', ').push;
     }
-}
-detectLevel();
+};
+// appData.chooseExpenses();
+// appData.detectDayBudget();
+// appData.detectLevel();
+// appData.checkSavings();
+// appData.chooseOptExpenses();
+appData.chooseIncome();
 
-// Функция для расчета накопления депозита
-function checkSavings() {
-    if (appData.savings == true) {
-        let save = +prompt("Какова сумма накоплений?"),
-            percent = +prompt("Под какой процент,");
-
-        appData.mounthIncome = save / 100 / 12 * percent;
-        alert("Доход в месяц с вашего депозита: " + appData.mounthIncome);
-    }
+for (var val in appData) {
+    alert('Наша программа включает в себя данные: ' +
+        appData[val]);
 }
-checkSavings();
-
-// Функция необязательных расходов
-function chooseOptExpenses() {
-    for (let i = 1; i < 4; i++) {
-        let articleOptExpenses = prompt("Статья необязательных расходов?", '');
-        appData.optionalExpenses[i] = articleOptExpenses;
-    }
-}
-chooseOptExpenses();
